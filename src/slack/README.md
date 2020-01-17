@@ -23,6 +23,9 @@ Once your Hangar app is up and running, use it's URL for the following steps:
 - Using the sidebar, navigate to "_Event Subscriptions_" and enable them
   - For the `Request URL` field, use your Hangar app's URL and then append `/slack/events`
   - Under "_Subscribe to bot events_" add the `message.im` scope
+  - Under "_Subscribe to workspace events_" add the `app_home_opened` scope
+- Using the sidebar, navigate to App Home
+  - Under "_App Home options_", enable to `Home Tab`
 - After clicking save, you should see a banner at te top of the page suggesting you reinstall the app; click `Reinstall` 
 
 ## Smoke Test
