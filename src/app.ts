@@ -36,16 +36,21 @@ app.use('/api', apiApp);
 
 const initDatabase = async (): Promise<void> => {
   if (process.env.NODE_ENV !== 'test') {
-    // Pull connection options from ormconfig.json
-    const options: ConnectionOptions = await getConnectionOptions();
-    const url = process.env.DATABASE_URL || (options as PostgresConnectionOptions).url;
-    await createConnection({
-      ...options,
-      url,
-      entities: [path.join(__dirname, 'entities/*')],
-      migrations: [path.join(__dirname, 'migration/*')],
-      migrationsRun: true,
-    } as PostgresConnectionOptions);
+    try {
+      // Pull connection options from ormconfig.json
+      const options: ConnectionOptions = await getConnectionOptions();
+      const url = process.env.DATABASE_URL || (options as PostgresConnectionOptions).url;
+      await createConnection({
+        ...options,
+        url,
+        entities: [path.join(__dirname, 'entities/*')],
+        migrations: [path.join(__dirname, 'migration/*')],
+        migrationsRun: true,
+      } as PostgresConnectionOptions);
+    } catch (err) {
+      logger.crit('Failed to connect to DB: ', err);
+      process.exit(1);
+    }
   }
 };
 
@@ -55,7 +60,7 @@ const initSlack = async (): Promise<void> => {
     app.use(slackApp);
     logger.info('Slack setup successfully');
   } catch (err) {
-    logger.error('Slack Bot Token is invalid', err);
+    logger.crit('Slack Bot Token is invalid', err);
     if (process.env.NODE_ENV !== 'test') {
       process.exit(1);
     }
